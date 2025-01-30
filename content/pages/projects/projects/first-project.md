@@ -3,7 +3,8 @@ title: First Project
 slug: /projects/first-project
 date: '2025-01-15'
 excerpt: >-
-  Our first major project showcasing our capabilities in web development and design.
+  Our first major project showcasing our capabilities in web development and
+  design.
 featuredImage:
   url: /images/abstract-feature1.svg
   altText: First project preview
@@ -35,8 +36,7 @@ bottomSections:
       - url: /images/abstract-feature2.svg
         altText: Image 2
         type: ImageBlock
-      - url: /images/abstract-feature3.svg
-        altText: Image 3
+      - altText: Image 3
         type: ImageBlock
     variant: three-col-grid
     colors: bg-light-fg-dark
