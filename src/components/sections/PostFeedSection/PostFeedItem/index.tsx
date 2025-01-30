@@ -14,6 +14,7 @@ export default function PostFeedItem(props) {
         showExcerpt,
         showDate,
         showAuthor,
+        showClient,
         hasSectionTitle,
         hasBigThumbnail,
         hoverEffect = 'move-up',
@@ -75,8 +76,10 @@ export default function PostFeedItem(props) {
                     <PostAttribution
                         showAuthor={showAuthor}
                         showDate={showDate}
+                        showClient={showClient}
                         date={post.date}
                         author={post.author}
+                        client={post.client}
                         className="mt-3"
                         hasAnnotations={hasAnnotations}
                     />
@@ -91,8 +94,9 @@ export default function PostFeedItem(props) {
     );
 }
 
-function PostAttribution({ showDate, showAuthor, date, author, className = '', hasAnnotations }) {
-    if (!showDate && !(showAuthor && author)) {
+function PostAttribution({ showDate, showAuthor, showClient, date, author, client, className = '', hasAnnotations }) {
+    const hasAttribution = showDate || (showAuthor && author) || (showClient && client);
+    if (!hasAttribution) {
         return null;
     }
     return (
@@ -102,6 +106,12 @@ function PostAttribution({ showDate, showAuthor, date, author, className = '', h
                     <span {...(hasAnnotations && { 'data-sb-field-path': 'author' })}>
                         <span {...(hasAnnotations && { 'data-sb-field-path': '.name' })}>{author.name}</span>
                     </span>
+                    {(showDate || (showClient && client)) && <span className="mx-2">|</span>}
+                </>
+            )}
+            {showClient && client && (
+                <>
+                    <span {...(hasAnnotations && { 'data-sb-field-path': 'client' })}>{client}</span>
                     {showDate && <span className="mx-2">|</span>}
                 </>
             )}

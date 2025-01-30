@@ -76,11 +76,11 @@ const StaticPropsResolvers = {
     PostFeedCategoryLayout: (props, data) => {
         const categoryId = props.__metadata?.id;
         const numOfPostsPerPage = props.numOfPostsPerPage ?? 10;
-        let allCategoryPosts = getAllCategoryPostsSorted(data.objects, categoryId);
+        let categoryPosts = getAllCategoryPostsSorted(data.objects, categoryId);
         if (!process.env.stackbitPreview) {
-            allCategoryPosts = allCategoryPosts.filter(isPublished);
+            categoryPosts = categoryPosts.filter(isPublished);
         }
-        const paginationData = getPagedItemsForPage(props, allCategoryPosts, numOfPostsPerPage);
+        const paginationData = getPagedItemsForPage(props, categoryPosts, numOfPostsPerPage);
         const items = resolveReferences(paginationData.items, ['author', 'category'], data.objects);
         return {
             ...props,

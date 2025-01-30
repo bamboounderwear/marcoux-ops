@@ -1,4 +1,4 @@
-function cssClassesFromUrlPath(urlPath) {
+export function cssClassesFromUrlPath(urlPath) {
     const parts = urlPath
         .replace(/^\/|\/$/g, '')
         .split('/')
@@ -11,7 +11,7 @@ function cssClassesFromUrlPath(urlPath) {
     });
 }
 
-function getPageUrl(page) {
+export function getPageUrl(page) {
     if (!page || !page.slug) {
         return null;
     }
@@ -20,18 +20,15 @@ function getPageUrl(page) {
         return `/blog${page.slug.startsWith('/') ? page.slug : `/${page.slug}`}`;
     }
 
+    if (['ProjectLayout'].includes(page?.__metadata.modelName)) {
+        return `/projects${page.slug.startsWith('/') ? page.slug : `/${page.slug}`}`;
+    }
+
     return page.slug.startsWith('/') ? page.slug : `/${page.slug}`;
 }
 
-function setEnvironmentVariables() {
-  return {
-    ...(process?.env?.URL && { URL: process.env.URL }),
-  }
+export function setEnvironmentVariables() {
+    return {
+        ...(process?.env?.URL && { URL: process.env.URL })
+    };
 }
-
-
-module.exports = {
-    cssClassesFromUrlPath,
-    getPageUrl,
-    setEnvironmentVariables
-};

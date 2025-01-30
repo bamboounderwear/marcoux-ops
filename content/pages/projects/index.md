@@ -35,16 +35,22 @@ seo:
   socialImage: /images/main-hero.svg
   type: Seo
 type: ProjectFeedLayout
+numOfProjectsPerPage: 10
 projectFeed:
   type: PagedPostsSection
-  title: null
-  subtitle: null
   showThumbnail: true
   showExcerpt: true
   showDate: true
-  actions: []
-  elementId: null
+  showClient: true
   variant: three-col-grid
   colors: bg-light-fg-dark
+  styles:
+    self:
+      padding:
+        - pt-12
+        - pl-4
+        - pb-12
+        - pr-4
+      justifyContent: center
   hoverEffect: move-up
 ---

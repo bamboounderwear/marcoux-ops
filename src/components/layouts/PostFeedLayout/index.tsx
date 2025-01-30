@@ -11,10 +11,10 @@ export default function PostFeedLayout(props) {
     const { page, site } = props;
     const BaseLayout = getBaseLayoutComponent(page.baseLayout, site.baseLayout);
     const { enableAnnotations = true } = site;
-    const { title, topSections = [], bottomSections = [], pageIndex, baseUrlPath, numOfPages, enableSearch, items, postFeed } = page;
+    const { title, topSections = [], bottomSections = [], pageIndex, baseUrlPath, numOfPages, items, postFeed, projectFeed } = page;
     const PostFeedSection = getComponent('PostFeedSection');
     const pageLinks = PageLinks({ pageIndex, baseUrlPath, numOfPages });
-    const searchBox = SearchBox({ enableSearch });
+    const feedProps = page.__metadata?.modelName === 'ProjectFeedLayout' ? projectFeed : postFeed;
 
     return (
         <BaseLayout page={page} site={site}>
@@ -26,12 +26,11 @@ export default function PostFeedLayout(props) {
                 )}
                 {renderSections(topSections, 'topSections', enableAnnotations)}
                 <PostFeedSection
-                    {...postFeed}
+                    {...feedProps}
                     posts={items}
                     pageLinks={pageLinks}
-                    searchBox={searchBox}
                     enableAnnotations={enableAnnotations}
-                    {...(enableAnnotations && { 'data-sb-field-path': 'postFeed' })}
+                    {...(enableAnnotations && { 'data-sb-field-path': page.__metadata?.modelName === 'ProjectFeedLayout' ? 'projectFeed' : 'postFeed' })}
                 />
                 {renderSections(bottomSections, 'bottomSections', enableAnnotations)}
             </main>
@@ -39,7 +38,7 @@ export default function PostFeedLayout(props) {
     );
 }
 
-function renderSections(sections: any[], fieldName: string, enableAnnotations: boolean) {
+function renderSections(sections, fieldName, enableAnnotations) {
     if (sections.length === 0) {
         return null;
     }
@@ -63,26 +62,6 @@ function renderSections(sections: any[], fieldName: string, enableAnnotations: b
     );
 }
 
-function SearchBox({ enableSearch }) {
-    if (!enableSearch) {
-        return null;
-    }
-    const AutoCompletePosts = getComponent('AutoCompletePosts');
-    const searchBoxStyle = {
-        '--aa-text-color-rgb': '2,0,29',
-        '--aa-muted-color-rgb': '2,0,29',
-        '--aa-muted-color-alpha': 0.5,
-        '--aa-input-border-color-rgb': '2,0,29',
-        '--aa-input-border-color-alpha': 0.25,
-        '--aa-primary-color-rgb': '2,0,29'
-    } as React.CSSProperties;
-    return (
-        <div className="w-full mb-9" style={searchBoxStyle}>
-            <AutoCompletePosts />
-        </div>
-    );
-}
-
 function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
     if (numOfPages < 2) {
         return null;
@@ -92,14 +71,6 @@ function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
     const startIndex = pageIndex - padRange > 2 ? pageIndex - padRange : 0;
     const endIndex = pageIndex + padRange < numOfPages - 3 ? pageIndex + padRange : numOfPages - 1;
 
-    // following logic renders pagination controls:
-    // for example, if the current page is 6 (pageIndex === 5)
-    //              ↓
-    // ← 1 ... 4 5 6 7 8 ... 20 →
-    //         ↑       ↑
-    // and padRange === 2, then it renders from 4 (6 - 2) to 8 (6 + 2)
-
-    // renders prev "←" button, if the current page is the first page, the button is disabled
     if (pageIndex > 0) {
         pageLinks.push(
             <PageLink key="prev" pageIndex={pageIndex - 1} baseUrlPath={baseUrlPath}>
@@ -114,7 +85,6 @@ function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
         );
     }
 
-    // if startIndex is not 0, then render the first page followed by ellipsis, if needed.
     if (startIndex > 0) {
         pageLinks.push(
             <PageLink key="0" pageIndex={0} baseUrlPath={baseUrlPath}>
@@ -126,7 +96,6 @@ function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
         }
     }
 
-    // render all pages between startIndex and endIndex, the current page should be disabled
     for (let i = startIndex; i <= endIndex; i++) {
         if (pageIndex === i) {
             pageLinks.push(<PageLinkDisabled key={i}>{i + 1}</PageLinkDisabled>);
@@ -139,7 +108,6 @@ function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
         }
     }
 
-    // if endIndex is not the last page, then render the last page preceded by ellipsis, if needed.
     if (endIndex < numOfPages - 1) {
         if (endIndex < numOfPages - 2) {
             pageLinks.push(<Ellipsis key="afterEllipsis" />);
@@ -151,7 +119,6 @@ function PageLinks({ pageIndex, baseUrlPath, numOfPages }) {
         );
     }
 
-    // renders next "→" button, if the current page is the last page, the button is disabled
     if (pageIndex < numOfPages - 1) {
         pageLinks.push(
             <PageLink key="next" pageIndex={pageIndex + 1} baseUrlPath={baseUrlPath}>
