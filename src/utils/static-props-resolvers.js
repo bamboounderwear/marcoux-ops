@@ -42,6 +42,9 @@ const StaticPropsResolvers = {
     PostLayout: (props, data, debugContext) => {
         return resolveReferences(props, ['author', 'category'], data.objects, debugContext);
     },
+    ProjectLayout: (props, data, debugContext) => {
+        return resolveReferences(props, [], data.objects, debugContext);
+    },
     PostFeedLayout: (props, data) => {
         const numOfPostsPerPage = props.numOfPostsPerPage ?? 10;
         let allPosts = getAllNonFeaturedPostsSorted(data.objects);
@@ -54,6 +57,20 @@ const StaticPropsResolvers = {
             ...props,
             ...paginationData,
             items
+        };
+    },
+    ProjectFeedLayout: (props, data) => {
+        const numOfProjectsPerPage = props.numOfProjectsPerPage ?? 10;
+        let allProjects = data.objects.filter((object) => object.__metadata?.modelName === 'ProjectLayout' && !object.isFeatured);
+        if (!process.env.stackbitPreview) {
+            allProjects = allProjects.filter(isPublished);
+        }
+        allProjects = allProjects.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const paginationData = getPagedItemsForPage(props, allProjects, numOfProjectsPerPage);
+        return {
+            ...props,
+            ...paginationData,
+            items: paginationData.items
         };
     },
     PostFeedCategoryLayout: (props, data) => {

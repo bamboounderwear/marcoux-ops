@@ -24,6 +24,15 @@ const StaticPathsResolvers = {
         const numOfPostsPerPage = page.numOfPostsPerPage ?? 10;
         return generatePagedPathsForPage(page, posts, numOfPostsPerPage);
     },
+    ProjectFeedLayout: (page, objects) => {
+        let projects = objects.filter((object) => object.__metadata?.modelName === 'ProjectLayout' && !object.isFeatured);
+        if (!process.env.stackbitPreview) {
+            projects = projects.filter(isPublished);
+        }
+        projects = projects.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const numOfProjectsPerPage = page.numOfProjectsPerPage ?? 10;
+        return generatePagedPathsForPage(page, projects, numOfProjectsPerPage);
+    },
     PostFeedCategoryLayout: (page, objects) => {
         const categoryId = page.__metadata?.id;
         const numOfPostsPerPage = page.numOfPostsPerPage ?? 10;

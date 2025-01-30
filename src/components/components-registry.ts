@@ -54,6 +54,8 @@ const components = {
     VideoBlock: dynamic(() => import('./blocks/VideoBlock')),
     PageLayout: dynamic(() => import('./layouts/PageLayout')),
     PostLayout: dynamic(() => import('./layouts/PostLayout')),
+    ProjectLayout: dynamic(() => import('./layouts/PostLayout')), // Reuse PostLayout for projects
     PostFeedLayout: dynamic(() => import('./layouts/PostFeedLayout')),
+    ProjectFeedLayout: dynamic(() => import('./layouts/PostFeedLayout')), // Reuse PostFeedLayout for projects
     PostFeedCategoryLayout: dynamic(() => import('./layouts/PostFeedCategoryLayout'))
 };
