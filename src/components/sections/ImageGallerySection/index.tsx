@@ -9,7 +9,7 @@ import ImageBlock from '../../blocks/ImageBlock';
 import Badge from '../../atoms/Badge';
 
 export default function ImageGallerySection(props) {
-    const { elementId, colors, backgroundImage, badge, title, subtitle, images = [], motion, styles = {}, enableAnnotations } = props;
+    const { elementId, colors, backgroundImage, badge, title, subtitle, images = [], motion, variant = 'three-col-grid', styles = {}, enableAnnotations } = props;
 
     return (
         <Section
@@ -47,6 +47,7 @@ export default function ImageGallerySection(props) {
                     </p>
                 )}
                 <ImageGalleryVariants
+                    variant={variant}
                     motion={motion}
                     images={images}
                     hasTopMargin={!!(badge?.label || title?.text || subtitle)}
@@ -59,23 +60,64 @@ export default function ImageGallerySection(props) {
 }
 
 function ImageGalleryVariants(props) {
-    const { motion = 'static' } = props;
+    const { motion = 'static', variant = 'three-col-grid' } = props;
     switch (motion) {
         case 'move-to-left':
         case 'move-to-right':
             return <ImageGalleryAnimatedGrid {...props} />;
         default:
-            return <ImageGalleryStaticGrid {...props} />;
+            switch (variant) {
+                case 'two-col-grid':
+                    return <ImageGalleryTwoColGrid {...props} />;
+                case 'three-col-grid':
+                    return <ImageGalleryThreeColGrid {...props} />;
+                case 'four-col-grid':
+                    return <ImageGalleryFourColGrid {...props} />;
+                default:
+                    return <ImageGalleryThreeColGrid {...props} />;
+            }
     }
 }
 
-function ImageGalleryStaticGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }) {
+function ImageGalleryTwoColGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }) {
     if (images.length === 0) {
         return null;
     }
     return (
         <div
-            className={classNames('w-full', 'flex', 'flex-wrap', 'items-center', mapStyles({ justifyContent: justifyContent }), { 'mt-12': hasTopMargin })}
+            className={classNames('w-full', 'grid', 'grid-cols-1', 'sm:grid-cols-2', 'gap-6', { 'mt-12': hasTopMargin })}
+            {...(hasAnnotations && { 'data-sb-field-path': '.images' })}
+        >
+            {images.map((image, index) => (
+                <ImageBlock key={index} {...image} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+            ))}
+        </div>
+    );
+}
+
+function ImageGalleryThreeColGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }) {
+    if (images.length === 0) {
+        return null;
+    }
+    return (
+        <div
+            className={classNames('w-full', 'grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'gap-6', { 'mt-12': hasTopMargin })}
+            {...(hasAnnotations && { 'data-sb-field-path': '.images' })}
+        >
+            {images.map((image, index) => (
+                <ImageBlock key={index} {...image} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+            ))}
+        </div>
+    );
+}
+
+function ImageGalleryFourColGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }) {
+    if (images.length === 0) {
+        return null;
+    }
+    return (
+        <div
+            className={classNames('w-full', 'grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-4', 'gap-6', { 'mt-12': hasTopMargin })}
             {...(hasAnnotations && { 'data-sb-field-path': '.images' })}
         >
             {images.map((image, index) => (
@@ -123,7 +165,7 @@ function ImageGalleryAnimatedGrid({ images = [], motion, hasTopMargin, hasAnnota
                         className={classNames(
                             'sb-image-strip-track',
                             'flex',
-                            ' items-center',
+                            'items-center',
                             'w-max',
                             motion === 'move-to-left' ? 'sb-animate-slide-left' : 'sb-animate-slide-right'
                         )}

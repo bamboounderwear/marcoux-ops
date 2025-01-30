@@ -32,22 +32,50 @@ bottomSections:
       - url: /images/abstract-feature1.svg
         altText: Image 1
         type: ImageBlock
+        styles:
+          self:
+            borderRadius: medium
+            padding:
+              - pt-2
+              - pb-2
+              - pl-2
+              - pr-2
       - url: /images/abstract-feature2.svg
         altText: Image 2
         type: ImageBlock
+        styles:
+          self:
+            borderRadius: medium
+            padding:
+              - pt-2
+              - pb-2
+              - pl-2
+              - pr-2
       - url: /images/abstract-feature3.svg
         altText: Image 3
         type: ImageBlock
+        styles:
+          self:
+            borderRadius: medium
+            padding:
+              - pt-2
+              - pb-2
+              - pl-2
+              - pr-2
+    motion: static
     variant: three-col-grid
     colors: bg-light-fg-dark
     styles:
       self:
         padding:
-          - pt-16
-          - pl-16
-          - pb-16
-          - pr-16
+          - pt-12
+          - pl-8
+          - pb-12
+          - pr-8
         justifyContent: center
+        gap: gap-6
+      subtitle:
+        textAlign: center
     type: ImageGallerySection
 styles:
   self:
